@@ -373,6 +373,13 @@ import { GuidFormat } from './guidformat';
                 } else {
                     throw new Error('Invalid guid from Typescript-Guid');
                 }
+            } else if (typeof obj === 'object' && obj instanceof _guidTs) {
+                const parts = SafeGuid.getParts(obj.toString());
+                if (parts.length > 0) {
+                    str = parts.join('');
+                } else {
+                    throw new Error('Invalid guid from Guid-Typescript');
+                }
             } else if (typeof obj === 'object' && obj instanceof SafeGuid) {
                 // we can just safely apply the value here, since it's already a SafeGuid instance
                 str = obj.valueOf();
