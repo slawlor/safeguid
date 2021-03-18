@@ -2,6 +2,7 @@ import { Guid as _tsGuid } from 'typescript-guid';
 import { Guid as _guidTs } from 'guid-typescript';
 import { GuidSet, GuidMap } from './guid-sets';
 import { GuidFormat } from './guidformat';
+import { IGuid } from './iguid';
 
 /**
  * Represents a strongly typed string representation of a guid with all the general mutation/helpers around guid management
@@ -33,7 +34,7 @@ import { GuidFormat } from './guidformat';
         var value : string;
         if (typeof guid === 'string') {
             value = guid;
-        } else if (typeof guid === 'object' && guid?.toString && typeof guid.toString === 'function') {
+        } else if (typeof guid === 'object' && guid.toString && typeof guid.toString === 'function') {
             value = guid.toString();
         } else {
             return false;
@@ -96,8 +97,8 @@ import { GuidFormat } from './guidformat';
      * @param entries - Optional entries to initialize the map with
      * @returns - A new Map<IGuid,T>
      */
-    public static createMap<T>(entries?: readonly (readonly [IGuid, T])[] | null) : Map<IGuid,T> {
-        if (entries?.length && entries?.length > 0) {
+    public static createMap<T>(entries?: ReadonlyArray<[IGuid, T]> | null) : Map<IGuid,T> {
+        if (entries && entries.length && entries.length > 0) {
             return new GuidMap<T>(entries);
         }
         return new GuidMap<T>();
@@ -108,8 +109,8 @@ import { GuidFormat } from './guidformat';
      * @param values - Optional values to initialize the set with
      * @returns - A new Set<IGuid>
      */
-    public static createSet(values?: readonly IGuid[] | null) : Set<IGuid> {
-        if (values?.length && values?.length > 0) {
+    public static createSet(values?: ReadonlyArray<IGuid> | null) : Set<IGuid> {
+        if (values && values.length && values.length > 0) {
             return new GuidSet(values);
         }
         return new GuidSet();
@@ -162,11 +163,9 @@ import { GuidFormat } from './guidformat';
                 throw new Error('Invalid guid format');
             }
         } else if (typeof potentialGuid === 'object') {
-            if (potentialGuid instanceof SafeGuid) {
-                other = potentialGuid;
-            } else if (potentialGuid instanceof _tsGuid) {
+            if (potentialGuid instanceof SafeGuid || potentialGuid instanceof _tsGuid || potentialGuid instanceof _guidTs) {
                 other = new SafeGuid(potentialGuid);
-            } else if (potentialGuid?.toString && typeof potentialGuid.toString === 'function') {
+            } else if (potentialGuid && potentialGuid.toString && typeof potentialGuid.toString === 'function') {
                 const str = potentialGuid.toString();
                 if (SafeGuid.isGuid(str)) {
                     other = new SafeGuid(str);
@@ -219,7 +218,7 @@ import { GuidFormat } from './guidformat';
         */
         const str = (' ' + super.toString()).slice(1);
 
-        const format = fmt ?? GuidFormat.D;
+        const format = fmt !== undefined && fmt !== null && fmt.length > 0 ? fmt : GuidFormat.D;
         // early exit if "N" is the format, since that the internal structure stored for the guid
         if (format === GuidFormat.N) {
             return str.replace('-','').toLowerCase();
@@ -340,7 +339,7 @@ import { GuidFormat } from './guidformat';
     private static getParts(str: string) {
         if (str) {
             const matches = str.match(SafeGuid.validator);
-            if (matches?.length && matches?.length > 0 && matches[0]) {
+            if (matches && matches.length && matches.length > 0 && matches[0]) {
                 // there was a match, find the right fmt (a or b)
                 if (matches[1]) { // outer group 1 matches
                     return [ matches[2], matches[3], matches[4], matches[5], matches[6] ];
@@ -383,7 +382,7 @@ import { GuidFormat } from './guidformat';
             } else if (typeof obj === 'object' && obj instanceof SafeGuid) {
                 // we can just safely apply the value here, since it's already a SafeGuid instance
                 str = obj.valueOf();
-            } else if (typeof obj === 'object' && obj?.toString && typeof obj.toString === 'function') {
+            } else if (typeof obj === 'object' && obj.toString && typeof obj.toString === 'function') {
                 const parts = SafeGuid.getParts(obj.toString());
                 if (parts.length > 0){
                     str = parts.join('');

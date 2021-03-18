@@ -1,3 +1,4 @@
+import { IGuid } from './iguid';
 import { SafeGuid } from './safeguid';
 
 /**
@@ -5,8 +6,17 @@ import { SafeGuid } from './safeguid';
  */
  class IteratorMapping<TIn,TOut> implements IterableIterator<TOut> {
     
+    //#region Fields
+
+    private readonly strings: IterableIterator<TIn>;
+    private readonly converter: (arg: TIn) => TOut;
+
+    //#endregion
+
     /** Constructor from another iterator with a converter */
-    constructor(private strings: IterableIterator<TIn>, private converter: (arg: TIn) => TOut) {
+    constructor(strings: IterableIterator<TIn>, converter: (arg: TIn) => TOut) {
+        this.strings = strings;
+        this.converter = converter;
     }
 
     /**
@@ -21,7 +31,7 @@ import { SafeGuid } from './safeguid';
      */
     public next() : IteratorResult<TOut> {
         const current = this.strings.next();
-        if (current?.done === false && current.value) {
+        if (current && current.done === false && current.value) {
             const converted = this.converter(current.value);
             return {
                 done: false,
@@ -30,7 +40,7 @@ import { SafeGuid } from './safeguid';
         }
         return {
             done: true,
-            value: null
+            value: <any>(null) as TOut
         };
     }
 }
@@ -42,9 +52,12 @@ import { SafeGuid } from './safeguid';
 
     /** Constructors */
     constructor();
-    constructor(values: readonly IGuid[]);
-    constructor(values?: readonly IGuid[] | null) {
-        super(values !== undefined && values !== null ? values?.map(item => item.valueOf()) : undefined);
+    constructor(values: ReadonlyArray<IGuid>);
+    constructor(values?: ReadonlyArray<IGuid>) {
+        // @ts-ignore
+        const arr : ReadonlyArray<string> | undefined = values !== undefined && values !== null ? values.map(item => item.valueOf()) : undefined;
+        // @ts-ignore
+        super(arr);
     }
 
     /** Add a guid to the set */
@@ -60,7 +73,7 @@ import { SafeGuid } from './safeguid';
 
     /** Iterate through the set with a callback */
     public forEach(callbackfn: (value: IGuid, value2: IGuid, set: GuidSet) => void, thisArg?: any): void {
-        super.forEach((guida, guidb, _set) => callbackfn(new SafeGuid(guida), new SafeGuid(guidb), this), thisArg);
+        super.forEach((guida, guidb, set) => callbackfn(new SafeGuid(guida), new SafeGuid(guidb), this), thisArg);
     }
 
     /** Test if set contains guid */
@@ -72,7 +85,7 @@ import { SafeGuid } from './safeguid';
      * Returns an iterable of values in the set.
      */
     public values() : IterableIterator<IGuid> {
-        return new IteratorMapping(super.values(), (str) => new SafeGuid(str));
+        return new IteratorMapping<String, IGuid>(super.values(), (str) => new SafeGuid(str));
     }
 
     /**
@@ -86,12 +99,12 @@ import { SafeGuid } from './safeguid';
      * Returns an iterable of [v,v] pairs for every value `v` in the set.
      */
     public entries() : IterableIterator<[IGuid, IGuid]> {
-        return new IteratorMapping(this.keys(), (guid) => [guid, guid]);
+        return new IteratorMapping<IGuid, [IGuid, IGuid]>(this.keys(), (guid) => [guid, guid]);
     }
 
     /** Iterates over values in the set. */
     public [Symbol.iterator](): IterableIterator<IGuid> {
-        return new IteratorMapping(super[Symbol.iterator](), (item) => new SafeGuid(item));
+        return new IteratorMapping<String, IGuid>(super[Symbol.iterator](), (item) => new SafeGuid(item));
     }
 }
 
@@ -102,9 +115,12 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
 
     /** Constructors */
     constructor();
-    constructor(entries: readonly (readonly [IGuid,V])[]);
-    constructor(entries?: readonly (readonly [IGuid,V])[] | null) {
-        super(entries !== undefined && entries !== null ? entries?.map(kvp => [kvp[0].valueOf(), kvp[1]]) : undefined);
+    constructor(entries: ReadonlyArray<[IGuid, V]>);
+    constructor(entries?: ReadonlyArray<[IGuid, V]>) {
+        // @ts-ignore
+        const arr : ReadonlyArray<[string, V]> | undefined = entries !== undefined && entries !== null ? entries.map(kvp => [kvp[0].valueOf(), kvp[1]]) : undefined;
+        // @ts-ignore
+        super(arr);
     }
 
     /** Delete an item with the key from the map */
@@ -114,7 +130,7 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
 
     /** Iterate through the map, threading a callback */
     public forEach(callbackfn: (value: V, key: IGuid, map: GuidMap<V>) => void, thisArg?: any): void {
-        super.forEach((v, guidb, _set) => callbackfn(v, new SafeGuid(guidb), this), thisArg);
+        super.forEach((v, guidb, set) => callbackfn(v, new SafeGuid(guidb), this), thisArg);
     }
 
     /** Get an item with the given key from the map */
@@ -144,18 +160,18 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
      * Returns an iterable of keys in the map
      */
     public keys(): IterableIterator<IGuid> {
-        return new IteratorMapping(super.keys(), (str) => new SafeGuid(str));
+        return new IteratorMapping<String, IGuid>(super.keys(), (str) => new SafeGuid(str));
     }
 
     /**
      * Returns an iterable of key, value pairs for every entry in the map.
      */
     public entries() : IterableIterator<[IGuid, V]> {
-        return new IteratorMapping(super.entries(), (strarr) => [new SafeGuid(strarr[0]), strarr[1]]);
+        return new IteratorMapping<[String, V], [IGuid, V]>(super.entries(), (strarr) => [new SafeGuid(strarr[0]), strarr[1]]);
     }
 
     /** Returns an iterable of entries in the map. */
     public [Symbol.iterator](): IterableIterator<[IGuid, V]> {
-        return new IteratorMapping(super[Symbol.iterator](), (arg) => [new SafeGuid(arg[0]), arg[1]]);
+        return new IteratorMapping<[String, V], [IGuid, V]>(super[Symbol.iterator](), (arg) => [new SafeGuid(arg[0]), arg[1]]);
     }
 }
