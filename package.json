@@ -1,6 +1,6 @@
 {
   "name": "safeguid",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Better guid management in Typescript",
   "scripts": {
     "verify": ".\\node_modules\\.bin\\tslint .\\lib\\**",
@@ -14,19 +14,16 @@
     "guid",
     "identifier"
   ],
-  "main": "./dist/safeguid.js",
-  "types": "./dist/safeguid.d.ts",
+  "main": "./dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/slawlor/safeguid"
   },
   "devDependencies": {
     "@types/node": "^9.3.0",
-    "guid-typescript": "^1.0.9",
     "ts-node": "^7.0.1",
     "tslint": "^5.20.1",
-    "typescript": "^3.9.9",
-    "typescript-guid": "^1.0.3"
+    "typescript": "^3.9.9"
   },
   "dependencies": {
     "guid-typescript": "^1.0.9",

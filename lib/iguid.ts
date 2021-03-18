@@ -7,13 +7,19 @@ import { GuidFormat } from './guidformat';
  * Represents a Guid wrapper around the SafeGuid implementation. Can be used for simple
  * comparisons or serialization over the wire
  */
-export interface IGuid extends String {
+export declare interface IGuid extends String {
     /**
      * Compare this guid to another guid
      * @param other - The other guid to compare to as a typescript-guid 'Guid' object
      * @returns true if the guids are equal, or both null, false otherwise
      */
     equals(other: _tsGuid) : boolean;
+    /**
+     * Compare this guid to another guid
+     * @param other - The other guid to compare to as a guid-typescript 'Guid' object
+     * @returns true if the guids are equal, or both null, false otherwise
+     */
+    equals(other: _guidTs) : boolean;
     /**
      * Compare this guid to another guid
      * @param other - The other guid to compare to
@@ -31,7 +37,7 @@ export interface IGuid extends String {
      * @param potentialGuid - A potential guid in any of the supported formats
      * @returns true if the potential guid is equal to this one, false in all other scenarios
      */
-    equals(potentialGuid?: IGuid | _tsGuid | string | String | undefined) : boolean;
+    equals(potentialGuid?: IGuid | _tsGuid | _guidTs | string | String | undefined) : boolean;
 
     /**
      * Tests whether the guid is empty

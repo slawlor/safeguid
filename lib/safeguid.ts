@@ -128,6 +128,12 @@ import { IGuid } from './iguid';
     public equals(other: _tsGuid) : boolean;
     /**
      * Compare this guid to another guid
+     * @param other - The other guid to compare to as a guid-typescript 'Guid' object
+     * @returns true if the guids are equal, or both null, false otherwise
+     */
+    public equals(other: _guidTs) : boolean;
+    /**
+     * Compare this guid to another guid
      * @param other - The other guid to compare to
      * @returns true if the guids are equal, or both null, false otherwise
      */
@@ -143,7 +149,7 @@ import { IGuid } from './iguid';
      * @param potentialGuid - A potential guid in any of the supported formats
      * @returns true if the potential guid is equal to this one, false in all other scenarios
      */
-    public equals(potentialGuid?: IGuid | _tsGuid | string | String | undefined) : boolean {
+    public equals(potentialGuid?: IGuid | _tsGuid | _guidTs | string | String | undefined) : boolean {
         if ((potentialGuid === undefined || potentialGuid === null)) {
             if ((this === undefined || this === null)) {
                 // both null or undefined
