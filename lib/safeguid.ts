@@ -20,7 +20,7 @@ import { IGuid } from './iguid';
     /**
      * Represents the empty guid
      */
-    public static EMPTY : SafeGuid = new SafeGuid(SafeGuid._EMPTY);
+    public static EMPTY : IGuid = new SafeGuid(SafeGuid._EMPTY);
 
     //#endregion
 
@@ -97,7 +97,7 @@ import { IGuid } from './iguid';
      * @param entries - Optional entries to initialize the map with
      * @returns - A new Map<IGuid,T>
      */
-    public static createMap<T>(entries?: ReadonlyArray<[IGuid, T]> | null) : Map<IGuid,T> {
+    public static createMap<T>(entries?: ReadonlyArray<[IGuid | string, T]> | null) : Map<IGuid,T> {
         if (entries && entries.length && entries.length > 0) {
             return new GuidMap<T>(entries);
         }
@@ -109,7 +109,7 @@ import { IGuid } from './iguid';
      * @param values - Optional values to initialize the set with
      * @returns - A new Set<IGuid>
      */
-    public static createSet(values?: ReadonlyArray<IGuid> | null) : Set<IGuid> {
+    public static createSet(values?: ReadonlyArray<IGuid | string> | null) : Set<IGuid> {
         if (values && values.length && values.length > 0) {
             return new GuidSet(values);
         }
