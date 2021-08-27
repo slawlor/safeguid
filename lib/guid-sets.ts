@@ -1,6 +1,18 @@
 import { IGuid } from './iguid';
 import { SafeGuid } from './safeguid';
 
+const toRawGuidString = (value: IGuid | string): string | undefined => {
+    if (typeof value === 'string') {
+        if(SafeGuid.isGuid(value)) {
+            return (' ' + value).slice(1).replace('-', '').toLowerCase()
+        } else {
+            return undefined;
+        }
+    } else {
+        return value.valueOf();
+    }
+}
+
 /**
  * Represents a mapping from one iterator to another
  */
@@ -52,23 +64,40 @@ import { SafeGuid } from './safeguid';
 
     /** Constructors */
     constructor();
-    constructor(values: ReadonlyArray<IGuid>);
-    constructor(values?: ReadonlyArray<IGuid>) {
+    constructor(values: Iterable<IGuid | string>);
+    constructor(values?: Iterable<IGuid | string>) {
         // @ts-ignore
-        const arr : ReadonlyArray<string> | undefined = values !== undefined && values !== null ? values.map(item => item.valueOf()) : undefined;
+        let arr: Array<string> | undefined = undefined;
+        if(values) {
+            arr = new Array<string>();
+            for (const value of values) {
+                const rawGuidString = toRawGuidString(value);
+                if(rawGuidString) {
+                    arr.push(rawGuidString);
+                }
+            }
+        }
+
         // @ts-ignore
         super(arr);
     }
 
     /** Add a guid to the set */
-    public add(guid: IGuid) {
-        super.add(guid.valueOf());
+    public add(guid: IGuid | string) {
+        const rawGuidString = toRawGuidString(guid);
+        if(rawGuidString) {
+            super.add(rawGuidString);
+        }
         return this;
     }
 
     /** Delete a guid from the set */
-    public delete(guid : IGuid) {
-        return super.delete(guid.valueOf());
+    public delete(guid : IGuid | string) {
+        const rawGuidString = toRawGuidString(guid);
+        if(rawGuidString) {
+            return super.delete(rawGuidString);
+        }
+        return false;
     }
 
     /** Iterate through the set with a callback */
@@ -77,8 +106,12 @@ import { SafeGuid } from './safeguid';
     }
 
     /** Test if set contains guid */
-    public has(value: IGuid) : boolean {
-        return super.has(value.valueOf());
+    public has(value: IGuid | string) : boolean {
+        const rawGuidString = toRawGuidString(value);
+        if(rawGuidString) {
+            return super.has(rawGuidString);
+        }
+        return false;
     }
 
     /**
@@ -115,17 +148,31 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
 
     /** Constructors */
     constructor();
-    constructor(entries: ReadonlyArray<[IGuid, V]>);
-    constructor(entries?: ReadonlyArray<[IGuid, V]>) {
+    constructor(entries: Iterable<[IGuid | string, V]>);
+    constructor(entries?: Iterable<[IGuid | string, V]>) {
         // @ts-ignore
-        const arr : ReadonlyArray<[string, V]> | undefined = entries !== undefined && entries !== null ? entries.map(kvp => [kvp[0].valueOf(), kvp[1]]) : undefined;
+        let arr: Array<[string, V]> | undefined = undefined;
+        if(entries) {
+            arr = new Array<[string, V]>();
+            for (const [key, value] of entries) {
+                const rawGuidString = toRawGuidString(key);
+                if(rawGuidString) {
+                    arr.push([rawGuidString, value]);
+                }
+            }
+        }
+
         // @ts-ignore
         super(arr);
     }
 
     /** Delete an item with the key from the map */
-    public delete(key: IGuid) : boolean {
-        return super.delete(key.valueOf());
+    public delete(key: IGuid | string) : boolean {
+        const rawGuidString = toRawGuidString(key);
+        if(rawGuidString) {
+            return super.delete(rawGuidString);
+        }
+        return false;
     }
 
     /** Iterate through the map, threading a callback */
@@ -134,18 +181,29 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
     }
 
     /** Get an item with the given key from the map */
-    public get(key: IGuid) {
-        return super.get(key.valueOf());
+    public get(key: IGuid | string) {
+        const rawGuidString = toRawGuidString(key);
+        if(rawGuidString) {
+            return super.get(rawGuidString);
+        }
+        return undefined;
     }
 
     /** Test if map contains key */
-    public has(key : IGuid) : boolean {
-        return super.has(key.valueOf());
+    public has(key : IGuid | string) : boolean {
+        const rawGuidString = toRawGuidString(key);
+        if(rawGuidString) {
+            return super.has(rawGuidString);
+        }
+        return false;
     }
 
     /** Set a key-value pair into the map */
-    public set(key: IGuid, value: V) : this {
-        super.set(key.valueOf(), value);
+    public set(key: IGuid | string, value: V) : this {
+        const rawGuidString = toRawGuidString(key);
+        if(rawGuidString) {
+            super.set(rawGuidString, value);
+        }
         return this;
     }
 
