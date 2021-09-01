@@ -97,8 +97,8 @@ import { IGuid } from './iguid';
      * @param entries - Optional entries to initialize the map with
      * @returns - A new Map<IGuid,T>
      */
-    public static createMap<T>(entries?: ReadonlyArray<[IGuid | string, T]> | null) : Map<IGuid,T> {
-        if (entries && entries.length && entries.length > 0) {
+    public static createMap<T>(entries?: Iterable<[IGuid | string, T]> | null) : Map<IGuid,T> {
+        if (entries) {
             return new GuidMap<T>(entries);
         }
         return new GuidMap<T>();
@@ -109,8 +109,8 @@ import { IGuid } from './iguid';
      * @param values - Optional values to initialize the set with
      * @returns - A new Set<IGuid>
      */
-    public static createSet(values?: ReadonlyArray<IGuid | string> | null) : Set<IGuid> {
-        if (values && values.length && values.length > 0) {
+    public static createSet(values?: Iterable<IGuid | string> | null) : Set<IGuid> {
+        if (values) {
             return new GuidSet(values);
         }
         return new GuidSet();

@@ -101,7 +101,7 @@ const toRawGuidString = (value: IGuid | string): string | undefined => {
     }
 
     /** Iterate through the set with a callback */
-    public forEach(callbackfn: (value: IGuid, value2: IGuid, set: GuidSet) => void, thisArg?: any): void {
+    public forEach(callbackfn: (value: IGuid, value2: IGuid, set: Set<IGuid>) => void, thisArg?: any): void {
         super.forEach((guida, guidb, set) => callbackfn(new SafeGuid(guida), new SafeGuid(guidb), this), thisArg);
     }
 
@@ -176,8 +176,8 @@ export class GuidMap<V> extends Map<String, V> implements Map<IGuid, V> {
     }
 
     /** Iterate through the map, threading a callback */
-    public forEach(callbackfn: (value: V, key: IGuid, map: GuidMap<V>) => void, thisArg?: any): void {
-        super.forEach((v, guidb, set) => callbackfn(v, new SafeGuid(guidb), this), thisArg);
+    public forEach(callbackfn: (value: V, key: IGuid, map: Map<IGuid, V>) => void, thisArg?: any): void {
+        super.forEach((v, guidb, map) => callbackfn(v, new SafeGuid(guidb), this), thisArg);
     }
 
     /** Get an item with the given key from the map */
