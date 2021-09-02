@@ -34,7 +34,7 @@ import { IGuid } from './iguid';
         var value : string;
         if (typeof guid === 'string') {
             value = guid;
-        } else if (typeof guid === 'object' && guid.toString && typeof guid.toString === 'function') {
+        } else if (guid && typeof guid === 'object' && guid.toString && typeof guid.toString === 'function') {
             value = guid.toString();
         } else {
             return false;
