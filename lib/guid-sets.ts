@@ -4,7 +4,7 @@ import { SafeGuid } from './safeguid';
 const toRawGuidString = (value: IGuid | string): string | undefined => {
     if (typeof value === 'string') {
         if(SafeGuid.isGuid(value)) {
-            return (' ' + value).slice(1).replace('-', '').toLowerCase()
+            return (' ' + value).slice(1).replace(/-/g, '').toLowerCase()
         } else {
             return undefined;
         }
@@ -17,7 +17,7 @@ const toRawGuidString = (value: IGuid | string): string | undefined => {
  * Represents a mapping from one iterator to another
  */
  class IteratorMapping<TIn,TOut> implements IterableIterator<TOut> {
-    
+
     //#region Fields
 
     private readonly strings: IterableIterator<TIn>;

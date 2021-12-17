@@ -12,7 +12,7 @@ import { IGuid } from './iguid';
 
     //#region Constants
 
-    private static validator = 
+    private static validator =
         new RegExp('^\\(?\\{?(([a-z0-9]{8})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{4})-([a-z0-9]{12}))\\)?\\}?|(([a-z0-9]{8})([a-z0-9]{4})([a-z0-9]{4})([a-z0-9]{4})([a-z0-9]{12}))$', 'i');
 
     private static _EMPTY : string = '00000000-0000-0000-0000-000000000000';
@@ -145,7 +145,7 @@ import { IGuid } from './iguid';
      */
     public equals(other: string | String) : boolean;
     /**
-     * 
+     *
      * @param potentialGuid - A potential guid in any of the supported formats
      * @returns true if the potential guid is equal to this one, false in all other scenarios
      */
@@ -209,7 +209,7 @@ import { IGuid } from './iguid';
      */
     public toString() : string {
         return this.toStringFormat(GuidFormat.D);
-    } 
+    }
 
     /**
      * Convert the guid to string representation
@@ -217,9 +217,9 @@ import { IGuid } from './iguid';
      */
     public toStringFormat(fmt? : GuidFormat | string | undefined) : string {
         /*
-        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations 
-        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string. 
-        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string. 
+        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations
+        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string.
+        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string.
         This concatenation results in a string copy in Chrome's implementation. Then the substring after the space can be referenced.
         */
         const str = (' ' + super.toString()).slice(1);
@@ -227,14 +227,14 @@ import { IGuid } from './iguid';
         const format = fmt !== undefined && fmt !== null && fmt.length > 0 ? fmt : GuidFormat.D;
         // early exit if "N" is the format, since that the internal structure stored for the guid
         if (format === GuidFormat.N) {
-            return str.replace('-','').toLowerCase();
+            return str.replace(/-/g,'').toLowerCase();
         }
         // retrieve the parsed parts
         const parts = SafeGuid.getParts(str);
         // join with a '-' in lowercase in order to do stuff like straight comparisons
         const d = parts.join('-').toLowerCase();
 
-        switch(format) 
+        switch(format)
         {
             case GuidFormat.D:
                 return d;
@@ -246,7 +246,7 @@ import { IGuid } from './iguid';
                 return d;
         }
     }
-    
+
     /**
      * Retrieve the guid as JSON ready value (StringFormat = 'D')
      * @returns string of guid ready for JSON
@@ -256,11 +256,11 @@ import { IGuid } from './iguid';
      * Retrieve the guid as JSON ready value (StringFormat = 'D')
      * @returns string of guid ready for JSON
      */
-    public toJSON() : any { 
+    public toJSON() : any {
         /*
-        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations 
-        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string. 
-        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string. 
+        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations
+        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string.
+        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string.
         This concatenation results in a string copy in Chrome's implementation. Then the substring after the space can be referenced.
         */
         const payload = this.toStringFormat(GuidFormat.D);
@@ -273,12 +273,12 @@ import { IGuid } from './iguid';
      */
     public valueOf() : string {
         /*
-        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations 
-        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string. 
-        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string. 
+        NOTE: JavaScript's implementation of ECMAScript can vary from browser to browser, however for Chrome, many string operations
+        (substr, slice, regex, etc.) simply retain references to the original string rather than making copies of the string.
+        This is a known issue in Chrome (Bug #2869). This code works by appending a space to the front of the string.
         This concatenation results in a string copy in Chrome's implementation. Then the substring after the space can be referenced.
         */
-        const str = (' ' + super.toString()).slice(1).replace('-', '').toLowerCase();
+        const str = (' ' + super.toString()).slice(1).replace(/-/g, '').toLowerCase();
         return str;
     }
 
@@ -401,7 +401,7 @@ import { IGuid } from './iguid';
             }
         }
 
-        return str.replace('-','').toLowerCase(); // assure 'N' formatting
+        return str.replace(/-/g,'').toLowerCase(); // assure 'N' formatting
     }
 
     /**
